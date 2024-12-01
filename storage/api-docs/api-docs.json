@@ -1,0 +1,129 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Panda API",
+        "description": "Panda API Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/api/",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/subscribe-to-price-change": {
+            "post": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Subscribe to price change email",
+                "description": "Subscribe a user to receive email when the price of the specified listing changes.",
+                "operationId": "subscribeToPriceChange",
+                "requestBody": {
+                    "description": "Data required to subscribe to a price change notification",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ListingSubscriptionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subscription successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subscription successfully created"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid data or duplicate subscription",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Please provide the listing URL."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ListingSubscriptionRequest": {
+                "required": [
+                    "email",
+                    "url"
+                ],
+                "properties": {
+                    "email": {
+                        "description": "Email пользователя",
+                        "type": "string",
+                        "example": "user@example.com"
+                    },
+                    "url": {
+                        "description": "URL объявления",
+                        "type": "string",
+                        "example": "https://www.olx.ua/ad/example"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Subscription",
+            "description": "Subscription"
+        }
+    ]
+}
